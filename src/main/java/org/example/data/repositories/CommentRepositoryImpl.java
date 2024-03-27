@@ -1,4 +1,4 @@
-package blogPackage.data.repositories;
+package org.example.data.repositories;
 
 public class CommentRepositoryImpl {
 }

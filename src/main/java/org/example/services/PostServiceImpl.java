@@ -1,4 +1,4 @@
-package blogPackage.services;
+package org.example.services;
 
 public class PostServiceImpl {
 }
