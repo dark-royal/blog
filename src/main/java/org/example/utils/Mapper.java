@@ -1,0 +1,29 @@
+package org.example.utils;
+
+import org.example.data.models.User;
+import org.example.dtos.requests.RegisterUserRequest;
+import org.example.dtos.responses.RegisterUserResponse;
+
+import javax.swing.text.DateFormatter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+public class Mapper {
+    public static User map(RegisterUserRequest registerUserRequest){
+        User user = new User();
+        user.setFirstName(registerUserRequest.getFirstName());
+        user.setLastName(registerUserRequest.getLastName());
+        user.setUsername(registerUserRequest.getUsername());
+        user.setPassword(registerUserRequest.getPassword());
+        return user;
+
+    }
+
+    public static RegisterUserResponse map(User save){
+        RegisterUserResponse registerUserResponse = new RegisterUserResponse();
+        registerUserResponse.setId(save.getId());
+        registerUserResponse.setUsername(save.getUsername());
+        registerUserResponse.setDate(DateTimeFormatter.ofPattern(DateTimeFormatter.ofPattern("dd/MM/yyyy").format(LocalDateTime.now())));
+        return registerUserResponse;
+    }
+}
