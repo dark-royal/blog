@@ -1,7 +1,10 @@
 package org.example.data.repositories.servicesTest;
 
+import org.example.data.models.Post;
 import org.example.data.models.User;
+import org.example.data.repositories.PostRepository;
 import org.example.data.repositories.UserRepository;
+import org.example.dtos.requests.CreatePostRequest;
 import org.example.dtos.requests.LoginUserRequest;
 import org.example.dtos.requests.LogoutUserRequest;
 import org.example.dtos.requests.RegisterUserRequest;
@@ -27,6 +30,10 @@ public class UserServiceTest {
     private LoginUserRequest loginUserRequest;
     @Autowired
     private LogoutUserRequest logoutUserRequest;
+    @Autowired
+    private CreatePostRequest createPostRequest;
+    @Autowired
+    public PostRepository postRepository;
 
     @BeforeEach
     public void initializer() {
@@ -34,6 +41,8 @@ public class UserServiceTest {
         loginUserRequest = new LoginUserRequest();
         logoutUserRequest = new LogoutUserRequest();
         userRepository.deleteAll();
+        postRepository.deleteAll();
+        createPostRequest = new CreatePostRequest();
     }
 
     @Test
@@ -80,169 +89,69 @@ public class UserServiceTest {
         assertFalse(user.isLoginStatus());
     }
 
-//    @Test
-//    public void testUserCannotLoginWithIncorrectUsernameOrPassword(){
-//        registerRequest.setUsername("username");
-//        registerRequest.setPassword("password");
-//        diaryService.registerUser(registerRequest);
-//        assertEquals(1, diaryService.count());
-//        loginRequest.setUsername("username1");
-//        loginRequest.setPassword("password");
-//        assertThrows(DiaryNotFoundException.class,()->diaryService.login(loginRequest));
-//
-//
-//    }
-//    @Test
-//    public void test_user_cannot_login_while_not_registered_throw_diary_not_found_exception(){
-//        loginRequest.setUsername(loginRequest.getUsername());
-//        loginRequest.setPassword(loginRequest.getPassword());
-//        assertThrows(DiaryNotFoundException.class,()->diaryService.login(loginRequest));
-//
-//    }
-//
-//    @Test
-//    public void userCan_register_login_andlogout_with_incorrect_username() {
-//        registerRequest.setUsername("username");
-//        registerRequest.setPassword("password");
-//        diaryService.registerUser(registerRequest);
-//        assertEquals(1, diaryService.count());
-//        loginRequest.setUsername("username");
-//        loginRequest.setPassword("password");
-//        diaryService.login(loginRequest);
-//        assertTrue(diary.setLogStatus(true));
-//        assertThrows(DiaryNotFoundException.class,()->diaryService.logout("username1"));
-//        assertTrue(diary.setLogStatus(true));
-//    }
-//
-//    @Test
-//    public void userCanRegister_Login_createEntry(){
-//        registerRequest.setUsername("username");
-//        registerRequest.setPassword("password");
-//        diaryService.registerUser(registerRequest);
-//        assertEquals(1, diaryService.count());
-//        loginRequest.setUsername("username");
-//        loginRequest.setPassword("password");
-//        diaryService.login(loginRequest);
-//        assertTrue(diary.setLogStatus(true));
-//        createEntryRequest.setTitle("semicolon");
-//        createEntryRequest.setBody("i love semicolon");
-//        System.out.println(createEntryRequest.getDateAndTimeCreated());
-//        diaryService.createEntry(createEntryRequest);
-//        assertEquals(1,diaryService.count());
-//
-//
-//    }
-//
-//    @Test
-//    public void userCanRegister_Login_createEntry_andCanUpdateTheEntry() {
-//        registerRequest.setUsername("username");
-//        registerRequest.setPassword("password");
-//        diaryService.registerUser(registerRequest);
-//        assertEquals(1, diaryService.count());
-//        loginRequest.setUsername("username");
-//        loginRequest.setPassword("password");
-//        diaryService.login(loginRequest);
-//        assertTrue(diary.setLogStatus(true));
-//        createEntryRequest.setTitle("semicolon");
-//        createEntryRequest.setBody("i love semicolon");
-//        System.out.println(createEntryRequest.getDateAndTimeCreated());
-//        Entry entyr1 = diaryService.createEntry(createEntryRequest);
-//        assertEquals(1, diaryService.count());
-//        updateEntryRequest.setTitle("semicolon");
-//        updateEntryRequest.setBody("change");
-//        diaryService.updateEntry(updateEntryRequest);
-//        //System.out.println(STR."\{updateRequest.getId()} nothing");
-//        assertEquals("semicolon", diaryService.updateEntry(updateEntryRequest));
-//        assertEquals("change",diaryService.updateEntry(updateEntryRequest));
-//
-//
-//    }
-//
-//    @Test
-//    public void userCanRegister_login_createEntry_findEntry(){
-//        registerRequest.setUsername("username");
-//        registerRequest.setPassword("password");
-//        diaryService.registerUser(registerRequest);
-//        assertEquals(1, diaryService.count());
-//        loginRequest.setUsername("username");
-//        loginRequest.setPassword("password");
-//        diaryService.login(loginRequest);
-//        assertTrue(diary.setLogStatus(true));
-//        createEntryRequest.setTitle("semicolon");
-//        createEntryRequest.setBody("i love semicolon");
-//        System.out.println(createEntryRequest.getDateAndTimeCreated());
-//        diaryService.createEntry(createEntryRequest);
-//        assertEquals(1,diaryService.count());
-//        Entry entry = diaryService.findEntry("semicolon");
-//        assertEquals(entry,diaryService.findEntry("semicolon"));
-//
-//
-//    }
-//
-//    @Test
-//    public void userCanRegister_login_createEntry_deleteEntry(){
-//        registerRequest.setUsername("username");
-//        registerRequest.setPassword("password");
-//        diaryService.registerUser(registerRequest);
-//        assertEquals(1, diaryService.count());
-//        loginRequest.setUsername("username");
-//        loginRequest.setPassword("password");
-//        diaryService.login(loginRequest);
-//        assertTrue(diary.setLogStatus(true));
-//        createEntryRequest.setTitle("semicolon");
-//        createEntryRequest.setBody("i love semicolon");
-//        System.out.println(createEntryRequest.getDateAndTimeCreated());
-//        diaryService.createEntry(createEntryRequest);
-//        assertEquals(1,diaryService.count());
-//        Entry entry = diaryService.findEntry("semicolon");
-//        assertEquals(entry,diaryService.findEntry("semicolon"));
-//        diaryService.deleteEntry("semicolon");
-//        assertEquals(0,diaryService.countEntries());
-//
-//    }
-//
-//    @Test
-//    public void userCanRegister_login_createEntry_findEntryWithIncorrectPassword(){
-//        registerRequest.setUsername("username");
-//        registerRequest.setPassword("password");
-//        diaryService.registerUser(registerRequest);
-//        assertEquals(1, diaryService.count());
-//        loginRequest.setUsername("username");
-//        loginRequest.setPassword("password");
-//        diaryService.login(loginRequest);
-//        assertTrue(diary.setLogStatus(true));
-//        createEntryRequest.setTitle("semicolon");
-//        createEntryRequest.setBody("i love semicolon");
-//        System.out.println(createEntryRequest.getDateAndTimeCreated());
-//        diaryService.createEntry(createEntryRequest);
-//        assertEquals(1,diaryService.count());
-//        assertThrows(EntryNotFoundException.class,()->diaryService.findEntry("semicoloni"));
-//
-//
-//    }
-//
-//    @Test
-//    public void userCanRegister_login_createEntry_findEntry_deleteEntryWithIncorrectPassword() {
-//        registerRequest.setUsername("username");
-//        registerRequest.setPassword("password");
-//        diaryService.registerUser(registerRequest);
-//        assertEquals(1, diaryService.count());
-//        loginRequest.setUsername("username");
-//        loginRequest.setPassword("password");
-//        diaryService.login(loginRequest);
-//        assertTrue(diary.setLogStatus(true));
-//        createEntryRequest.setTitle("semicolon");
-//        createEntryRequest.setBody("i love semicolon");
-//        System.out.println(createEntryRequest.getDateAndTimeCreated());
-//        diaryService.createEntry(createEntryRequest);
-//        assertEquals(1, diaryService.count());
-//        Entry entry = diaryService.findEntry("semicolon");
-//        assertEquals(entry, diaryService.findEntry("semicolon"));
-//        assertThrows(EntryNotFoundException.class,()->diaryService.deleteEntry("semicoloni"));
-//    }
-//
+    @Test
+    public void userCanRegister_Login_createPost() {
+        User user = new User();
+        registerUserRequest.setUsername("username");
+        registerUserRequest.setPassword("password");
+        userService.registerUser(registerUserRequest);
+        assertEquals(1, userService.count());
+        loginUserRequest.setUsername("username");
+        loginUserRequest.setPassword("password");
+        userService.loginUser(loginUserRequest);
+        assertTrue(user.isLoginStatus());
+        createPostRequest.setTitle("semicolon");
+        createPostRequest.setContent("i love semicolon");
+        userService.createPost(createPostRequest);
+        assertEquals(1, userService.count());
+    }
 
+    @Test
+    public void userCanRegister_login_createPost_findPost() {
+        User user = new User();
+        registerUserRequest.setUsername("username");
+        registerUserRequest.setPassword("password");
+        userService.registerUser(registerUserRequest);
+        assertEquals(1, userService.count());
+        loginUserRequest.setUsername("username");
+        loginUserRequest.setPassword("password");
+        userService.loginUser(loginUserRequest);
+        assertTrue(user.isLoginStatus());
+        createPostRequest.setTitle("semicolon");
+        createPostRequest.setContent("i love semicolon");
+        createPostRequest.setAuthor("praise");
+        createPostRequest.setDatePosted(createPostRequest.getDatePosted());
+        userService.createPost(createPostRequest);
+        assertEquals(1, userService.count());
+        Post post = userService.findPost("praise");
+        assertEquals(post, userService.findPost("praise"));
 
+    }
 
+    @Test
+    public void userCanRegister_login_createEntry_deleteEntry() {
+        User user = new User();
+        registerUserRequest.setUsername("username");
+        registerUserRequest.setPassword("password");
+        userService.registerUser(registerUserRequest);
+        assertEquals(1, userService.count());
 
+        loginUserRequest.setUsername("username");
+        loginUserRequest.setPassword("password");
+        userService.loginUser(loginUserRequest);
+        assertTrue(user.isLoginStatus());
+
+        createPostRequest.setTitle("semicolon");
+        createPostRequest.setContent("i love semicolon");
+        System.out.println(createPostRequest.getDatePosted());
+        userService.createPost(createPostRequest);
+        assertEquals(1, userService.count());
+
+        Post post = userService.findPost("semicolon");
+        assertEquals("semicolon", post.getTitle());
+
+        userService.deletePost("semicolon");
+        assertEquals(0, userService.countPost());
+
+    }
 }

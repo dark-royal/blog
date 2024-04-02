@@ -1,7 +1,12 @@
 package org.example.utils;
 
+import org.example.data.models.Post;
 import org.example.data.models.User;
+import org.example.dtos.requests.CreatePostRequest;
+import org.example.dtos.requests.FindEntryRequest;
 import org.example.dtos.requests.RegisterUserRequest;
+import org.example.dtos.responses.CreatePostResponse;
+import org.example.dtos.responses.FindPostResponse;
 import org.example.dtos.responses.RegisterUserResponse;
 
 import javax.swing.text.DateFormatter;
@@ -26,4 +31,20 @@ public class Mapper {
         registerUserResponse.setDate(DateTimeFormatter.ofPattern(DateTimeFormatter.ofPattern("dd/MM/yyyy").format(LocalDateTime.now())));
         return registerUserResponse;
     }
+
+    public static CreatePostResponse map(Post createPost){
+        CreatePostResponse createPostResponse = new CreatePostResponse();
+        createPostResponse.setTitle(createPost.getTitle());
+        createPostResponse.setContent(createPost.getContent());
+        return createPostResponse;
+    }
+
+    public static Post map(CreatePostRequest createPostRequest) {
+        Post post = new Post();
+        post.setTitle(createPostRequest.getTitle());
+        post.setContent(createPostRequest.getContent());
+        return post;
+    }
+
+
 }

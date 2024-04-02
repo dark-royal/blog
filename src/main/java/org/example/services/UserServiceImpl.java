@@ -1,15 +1,22 @@
 package org.example.services;
 
+import org.example.data.models.Post;
 import org.example.data.models.User;
+import org.example.data.repositories.PostRepository;
 import org.example.data.repositories.UserRepository;
+import org.example.dtos.requests.CreatePostRequest;
 import org.example.dtos.requests.LoginUserRequest;
 import org.example.dtos.requests.LogoutUserRequest;
 import org.example.dtos.requests.RegisterUserRequest;
+import org.example.dtos.responses.CreatePostResponse;
 import org.example.dtos.responses.RegisterUserResponse;
 import org.example.exceptons.IncorrectUsernameException;
+import org.example.exceptons.PostNotFoundException;
 import org.example.exceptons.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import static org.example.utils.Mapper.map;
 
@@ -23,6 +30,10 @@ public class UserServiceImpl implements  UserService {
     private UserRepository userRepository;
     @Autowired
     private LoginUserRequest loginUserRequest;
+    @Autowired
+    private PostRepository postRepository;
+    @Autowired
+    private List<Post> posts;
 
     @Override
     public RegisterUserResponse registerUser(RegisterUserRequest registerUserRequest) {
@@ -56,7 +67,8 @@ public class UserServiceImpl implements  UserService {
     public void logoutUser(LogoutUserRequest logoutUserRequest) {
         User user1 = userRepository.findByUsername(logoutUserRequest.getUsername());
         if (user1 == null) throw new UserNotFoundException("user not found");
-        if(!user1.getUsername().equalsIgnoreCase(logoutUserRequest.getUsername())) throw  new IncorrectUsernameException("incorrect username ");
+        if (!user1.getUsername().equalsIgnoreCase(logoutUserRequest.getUsername()))
+            throw new IncorrectUsernameException("incorrect username ");
         else {
             user1.setLoginStatus(false);
             userRepository.save(user1);
@@ -69,6 +81,32 @@ public class UserServiceImpl implements  UserService {
         if (exists) throw new UsernameExistException(String.format("%s already exist", username));
 
     }
+
+    @Override
+    public CreatePostResponse createPost(CreatePostRequest createPostRequest) {
+        Post post = map(createPostRequest);
+        CreatePostResponse result = map(post);
+        posts.add(post);
+        postRepository.save(post);
+        return result;
+
+
+    }
+
+    @Override
+    public Post findPost(String author) {
+        Post foundPost = postRepository.findPostBy(author);
+        if (foundPost == null) throw new PostNotFoundException("post not found");
+        return foundPost;
+    }
+
+    @Override
+    public void deletePost(String author) {
+        Post post = findPost(author);
+        postRepository.delete(post);
+    }
+    @Override
+    public Long countPost(){
+        return postRepository.count();
+    }
 }
-
-
