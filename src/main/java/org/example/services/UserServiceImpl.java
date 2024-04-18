@@ -1,5 +1,6 @@
 package org.example.services;
 
+import lombok.AllArgsConstructor;
 import org.example.data.models.Post;
 import org.example.data.models.User;
 import org.example.data.repositories.PostRepository;
@@ -16,24 +17,22 @@ import org.example.exceptons.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.example.utils.Mapper.map;
 
 @Service
+@AllArgsConstructor
 public class UserServiceImpl implements  UserService {
-    @Autowired
-    private RegisterUserRequest registerUserRequest;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private LoginUserRequest loginUserRequest;
-    @Autowired
-    private PostRepository postRepository;
-    @Autowired
-    private List<Post> posts;
+
+
+    private final UserRepository userRepository;
+
+
+    private final PostRepository postRepository;
+
+    private  final List<Post> posts;
 
     @Override
     public RegisterUserResponse registerUser(RegisterUserRequest registerUserRequest) {
@@ -86,6 +85,7 @@ public class UserServiceImpl implements  UserService {
     public CreatePostResponse createPost(CreatePostRequest createPostRequest) {
         Post post = map(createPostRequest);
         CreatePostResponse result = map(post);
+
         posts.add(post);
         postRepository.save(post);
         return result;

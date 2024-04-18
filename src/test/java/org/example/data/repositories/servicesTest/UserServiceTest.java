@@ -47,8 +47,6 @@ public class UserServiceTest {
 
     @Test
     public void registerUser() {
-        User user = new User();
-
         registerUserRequest.setFirstName("praise");
         registerUserRequest.setLastName("oyewole");
         registerUserRequest.setUsername("dark royal");
@@ -129,7 +127,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void userCanRegister_login_createEntry_deleteEntry() {
+    public void userCanRegister_login_createPost_deletePost() {
         User user = new User();
         registerUserRequest.setUsername("username");
         registerUserRequest.setPassword("password");
